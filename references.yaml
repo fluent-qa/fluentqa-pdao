@@ -1,0 +1,29 @@
+database:
+  - https://github.com/RamiAwar/pydastic
+  - https://github.com/python-gino/gino
+  - https://github.com/strongbugman/danio
+  - https://github.com/dgilland/sqlservice
+  - https://github.com/Miksus/red-bird
+  - https://github.com/jpsca/sqla-wrapper
+data-sources:
+  - https://github.com/emissions-api/emissions-api
+  - https://github.com/open-genes/open-genes-api
+  - https://github.com/pypose/pypose.git
+  - https://github.com/binance/binance-futures-connector-python.git
+graph-network:
+  - https://github.com/0xPlaygrounds/subgrounds
+
+energy-marketdata:
+  - https://github.com/opennem/opennem
+tools:
+  - https://github.com/Textualize/textual
+bi:
+  - https://github.com/getredash/redash.git
+  - https://github.com/sfu-db/dataprep.git
+chat:
+  - https://github.com/errbotio/errbot.git
+
+db:
+  - https://github.com/skytable/skytable
+tutorial:
+  - https://testdriven.io/

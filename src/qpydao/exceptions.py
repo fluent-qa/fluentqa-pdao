@@ -1,0 +1,3 @@
+
+class RecordNotFoundException(RuntimeError):
+    pass
