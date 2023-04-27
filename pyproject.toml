@@ -128,7 +128,7 @@ addopts = [
 source = ["tests"]
 
 [coverage.paths]
-source = "fluentqa-pdao"
+source = "qpydao"
 
 [coverage.run]
 branch = true
