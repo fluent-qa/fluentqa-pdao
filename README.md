@@ -61,7 +61,7 @@ git push -u origin main
 1. 可以使用pydantic model
 2. 也可以使用sqlachmey
 3. 能够支持常用的DAO模式:
-   - [] 直接CRUD
+   - [X] 直接CRUD
    - [] Repository 模式
    - [] Model 支持直接操作数据库
    - [] Async支持+Session封装
