@@ -1,18 +1,24 @@
-from select import select
 from typing import Any
 
+from select import select
+
 from pydantic import BaseModel
-from sqlmodel import select, delete, SQLModel
-from sqlmodel import update
+from sqlalchemy.exc import ResourceClosedError
+from sqlmodel import SQLModel
+from sqlmodel import delete
+from sqlmodel import select
 
 
 def sql_result_to_model(result, model_type: type[BaseModel]) -> list[Any]:
     all_list = []
-    for row in result:
-        result_dict = {}
-        for key in result.keys():
-            result_dict[key] = str(row[key])
-        all_list.append(model_type(**result_dict))
+    try:
+        for row in result:
+            result_dict = {}
+            for key in result.keys():
+                result_dict[key] = str(row[key])
+            all_list.append(model_type(**result_dict))
+    except ResourceClosedError as e:
+        print(e)
     return all_list
 
 

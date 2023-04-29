@@ -1,4 +1,6 @@
-from typing import Dict, Any
+from typing import Any
+from typing import Dict
+
 from qpybase import BaseDataModel
 
 

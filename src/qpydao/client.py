@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-from pydantic import BaseModel
-from qpybase import logger
+import typing
+
 from sqlalchemy import create_engine
 from sqlalchemy import text
+from sqlalchemy import update
 from sqlmodel import Session
-from sqlmodel import SQLModel
 
 from qpydao.exceptions import RecordNotFoundException
 from qpydao.models import DatabaseConfig
@@ -27,6 +27,7 @@ class DatabaseClient:
         """
 
         return create_engine(connection_url)
+
     ## todo: page request
     def save(self, instance: SQLModel):
         with Session(self.engine) as s:
@@ -37,11 +38,13 @@ class DatabaseClient:
     def query(self, plain_sql: str, **kwargs):
         s = text(plain_sql)
         with self.engine.connect() as conn:
-            result = conn.execute(s, **kwargs)
+            result = conn.execute(s, **kwargs).fetchall()
         return result
 
-    def exec(self, plain_sql: str, **kwargs):
-        return self.query(plain_sql, **kwargs)
+    def execute(self, plain_sql: str, **kwargs) -> typing.NoReturn:
+        s = text(plain_sql, **kwargs)
+        with self.engine.connect() as conn:
+            conn.execute(s, **kwargs)
 
     def query_for_objects(self, plain_sql, result_type: type[BaseModel], **kwargs):
         result = self.query(plain_sql, **kwargs)
@@ -59,8 +62,7 @@ class DatabaseClient:
         query = build_select_query(entity, **kwargs)
         result = self.__query_by_statement(statement=query)
         if len(result) < 1:
-            raise RecordNotFoundException("Record Not Found",
-                                          kwargs)
+            raise RecordNotFoundException("Record Not Found", kwargs)
         else:
             return result[0]
 

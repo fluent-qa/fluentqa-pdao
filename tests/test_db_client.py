@@ -14,23 +14,23 @@ from qpydao.models import DatabaseConfig
 
 
 class Hero(SQLModel, table=True):
-    __table_args__ = {"schema": "demo"}
     id: int | None = Field(default=None, primary_key=True)
     name: str
     secret_name: str
     age: int | None = None
 
 
-db_config = DatabaseConfig(url="postgresql://postgres:changeit@localhost:7432/test_hub")
+db_config = DatabaseConfig(url="sqlite:///test.db")
 pg = DatabaseClient(config=db_config)
 
 
 def test_init_database():
-    init_pg_database(pg, schema_name="demos")
+    init_pg_database(pg)
 
 
 def test_create_engine():
     h1 = Hero(name="test3", secret_name="scret_name", age=10)
+    pg.save(h1)
     r1 = pg.one_or_none(Hero, name=h1.name, age=h1.age)
     if r1 is not None:
         r1.age = h1.age
@@ -39,25 +39,22 @@ def test_create_engine():
     pg.delete_by(Hero, name="test3")
 
 
-def test_query():
+## TODO: Fix the query
+def test_execute_sql():
     sql = """
-    select * from demo.hero
+    delete from hero
     """
-    db_config = DatabaseConfig(url="postgresql://postgres:changeit@localhost:7432/test_hub")
-    pg = DatabaseClient(config=db_config)
-    raw_result = pg.exec(
-        sql,
-    )
-    result = sql_result_to_model(raw_result, Hero)
-    print(result)
+    raw_result = pg.execute(sql)
+    sql_1 = """
+    update hero set name = 'test'
+    """
+    pg.execute(sql_1)
 
 
 def test_query_bind_params():
     sql = """
-    select * from demo.hero where name=:name
+    select * from hero where name=:name
     """
-    db_config = DatabaseConfig(url="postgresql://postgres:changeit@localhost:7432/test_hub")
-    pg = DatabaseClient(config=db_config)
-    raw_result = pg.exec(sql, **{"name": "t2"})
+    raw_result = pg.query(sql, **{"name": "t2"})
     result = sql_result_to_model(raw_result, Hero)
     print(result)

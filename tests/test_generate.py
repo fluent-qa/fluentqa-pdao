@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import pytest
+
 from qpybase.builtins import rendertools
 
 from qpydao import *
+
 
 seq = """
 activity_answer_id_seq
@@ -91,7 +93,9 @@ class {{table_name}}(SQLModel, table=True):
 
 @pytest.mark.skip
 def test_db_model():
-    db_config = DatabaseConfig(url="postgresql://postgres:changeit@localhost:7432/test_hub")
+    db_config = DatabaseConfig(
+        url="postgresql://postgres:changeit@localhost:7432/test_hub"
+    )
     pg = DatabaseClient(config=db_config)
     result = pg.query(query_field.format("api_monitor_record"))
     model_result = sql_result_to_model(result, models.FieldMeta)

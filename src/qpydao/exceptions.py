@@ -1,3 +1,2 @@
-
 class RecordNotFoundException(RuntimeError):
     pass
