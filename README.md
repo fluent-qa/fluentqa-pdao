@@ -5,7 +5,7 @@
 [![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=master&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions?query=workflow%3Abuild)
 ![Coverage Report](assets/images/coverage.svg)
 
-Awesome `fluentqa_pdao` is a Python cli/package 
+`fluentqa_pdao` is a Python package for database operation
 
 </div>
 
