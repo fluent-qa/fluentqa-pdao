@@ -1,9 +1,8 @@
 from typing import Any
 
 from pydantic import BaseModel
-from sqlalchemy import text, delete, select, update
+from sqlmodel import text, delete, select, update, SQLModel
 from sqlalchemy.exc import ResourceClosedError
-from sqlmodel import SQLModel
 
 
 class SqlBuilder:

@@ -4,9 +4,9 @@ import typing
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy import text
-from sqlmodel import Session, SQLModel, update
+from sqlmodel import Session, SQLModel
 
-from qpydao.exceptions import RecordNotFoundException, DAOException
+from qpydao.exceptions import DAOException
 from qpydao.models import DatabaseConfig
 from qpydao.sql_utils import SqlBuilder, SqlResultMapper
 
@@ -94,16 +94,16 @@ class DatabaseClient:
         result = self.query(plain_sql, **kwargs)
         return SqlResultMapper.sql_result_to_model(result, result_type)
 
-    def query_by_statement(self, statement) -> typing.List[typing.Any]:
+    def query_by_statement(self, statement) -> typing.List[SQLModel]:
         with Session(self.engine) as session:
             result = session.exec(statement).all()
-        return SqlResultMapper.sqlmodel_query_result_to_model(result)
+        return result
 
-    def find_by(self, entity: [SQLModel], **kwargs) -> typing.List[BaseModel]:
+    def find_by(self, entity: [SQLModel], **kwargs) -> typing.List[SQLModel]:
         query = SqlBuilder.build_select_query(entity, **kwargs)
         return self.query_by_statement(statement=query)
 
-    def find_one(self, entity: [SQLModel], **kwargs) -> BaseModel | None:
+    def find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
         return self.one_or_none(entity, **kwargs)
 
     def one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:

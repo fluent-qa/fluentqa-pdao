@@ -57,18 +57,6 @@ def test_batch_save():
         print(instance.json())
 
 
-## TODO: Fix the query
-def test_execute_sql():
-    sql = """
-    delete from hero
-    """
-    raw_result = dao.execute(sql)
-    sql_1 = """
-    update hero set name = 'test'
-    """
-    dao.execute(sql_1)
-
-
 def test_query_all():
     sql = """
     select * from hero
@@ -95,7 +83,7 @@ def test_query_bind_params():
 def test_use_sqlmodel_statement():
     s = select(Hero).where(Hero.name == "test6")
     result = dao.query_by_statement(s)
-    print(result[0])
+    print(result)
 
 
 def test_find_by():
@@ -105,8 +93,7 @@ def test_find_by():
 
 def test_delete_by():
     r2 = dao.find_by(Hero, name="test3")
-    result = SqlResultMapper.sql_result_to_model(r2, Hero)
-    dao.delete_by(Hero, **result[0].dict())
+    dao.delete_by(Hero, **r2[0].dict())
     r3 = dao.find_by(Hero, name="test3")
     print(r3)
 
