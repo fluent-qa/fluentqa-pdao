@@ -5,6 +5,7 @@ database:
   - https://github.com/dgilland/sqlservice
   - https://github.com/Miksus/red-bird
   - https://github.com/jpsca/sqla-wrapper
+  - https://github.com/encode/databases.git
 data-sources:
   - https://github.com/emissions-api/emissions-api
   - https://github.com/open-genes/open-genes-api
@@ -27,3 +28,5 @@ db:
   - https://github.com/skytable/skytable
 tutorial:
   - https://testdriven.io/
+  - https://www.tutorialspoint.com/sqlalchemy
+  - https://sqlmodel.tiangolo.com/databases/
