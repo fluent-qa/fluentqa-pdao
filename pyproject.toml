@@ -31,7 +31,7 @@ packages = [
 python = "^3.10"
 alembic = "^1.10.4"
 sqlmodel = "^0.0.8"
-qpybase = { git = "https://github.com/fluent-qa/fluentqa-pybase.git", branch = "main" }
+#qpybase = { git = "https://github.com/fluent-qa/fluentqa-pybase.git", branch = "main" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

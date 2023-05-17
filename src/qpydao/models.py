@@ -1,22 +1,23 @@
 from typing import Any
 from typing import Dict
 
-from qpybase import BaseDataModel
+from pydantic import BaseModel
 
 
-class DatabaseConfig(BaseDataModel):
+class DatabaseConfig(BaseModel):
     url: str | None = None
     pool_size: int | None = None
     additional: Dict[str, Any] = None
 
 
-class FieldMeta(BaseDataModel):
+class FieldMeta(BaseModel):
     field_name: str
     field_type: str
     code_type: str = ""
     code_value: str = ""
 
 
-class TableMeta(BaseDataModel):
+class TableMeta(BaseModel):
     table_name: str
     fields: list[FieldMeta]
+

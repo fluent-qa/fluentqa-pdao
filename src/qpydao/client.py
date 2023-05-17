@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import typing
+from functools import wraps
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine
@@ -72,7 +73,7 @@ class DatabaseClient:
             result = conn.execute(s, **kwargs).fetchall()
         return result
 
-    def execute(self, plain_sql: str, **kwargs) -> typing.NoReturn:
+    def execute(self, plain_sql: str, **kwargs):
         """
         execute sql
         :param plain_sql:
@@ -81,7 +82,7 @@ class DatabaseClient:
         """
         s = SqlBuilder.from_plain_sql(plain_sql, **kwargs)
         with self.engine.connect() as conn:
-            conn.execute(s, **kwargs)
+            return conn.execute(s, **kwargs)
 
     def query_for_objects(self, plain_sql, result_type: type[BaseModel], **kwargs):
         """
@@ -128,3 +129,36 @@ class DatabaseClient:
             statement = SqlBuilder.build_update_statement(instance)
             session.exec(statement)
             session.commit()
+
+
+class Databases:
+    _instances = {}
+
+    @staticmethod
+    def default_client(config: DatabaseConfig = None):
+        if Databases._instances.get("DEFAULT") is None:
+            if config is None:
+                raise DAOException("No Database Default Config Found")
+            else:
+                Databases._instances["DEFAULT"] = DatabaseClient(config)
+
+        return Databases._instances["DEFAULT"]
+
+    @staticmethod
+    def get_db_client(name: str = None):
+        return Databases._instances[name] if name \
+            else Databases._instances["DEFAULT"]
+
+
+def sql(sql_statement, processor=None):
+    def sql_decorator(func):
+        engine = Databases.get_db_client(processor)
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            sql_result = engine.exec(sql_statement, **kwargs)
+            return sql_result
+
+        return wrapper
+
+    return sql_decorator
