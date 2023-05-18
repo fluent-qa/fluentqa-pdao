@@ -36,7 +36,7 @@ sqlmodel = "^0.0.8"
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 allure-pytest = "^2.10.0"
-pre-commit = "^3.3.1"
+pre-commit = "^3.3.2"
 isort = {extras = ["colors"], version = "^5.11.4"}
 darglint = "^1.8.1"
 pytest-html = "^3.2.0"
