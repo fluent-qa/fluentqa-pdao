@@ -19,7 +19,7 @@ from qpydao.sql_utils import SqlBuilder, SqlResultMapper
     3. Get Records - Pydantic/SQLModel
     4. Save or Update
     5. Delete/Soft-Delete
-    6. Like Query or With Some Dyanmic Filter
+    6. Like Query or With Some Dynamic Filter
 """
 
 
@@ -80,9 +80,9 @@ class DatabaseClient:
         :param kwargs:
         :return:
         """
-        s = SqlBuilder.from_plain_sql(plain_sql, **kwargs)
+        # s = SqlBuilder.from_plain_sql(plain_sql, **kwargs)
         with self.engine.connect() as conn:
-            return conn.execute(s, **kwargs)
+            return conn.execute(plain_sql, **kwargs)
 
     def query_for_objects(self, plain_sql, result_type: type[BaseModel], **kwargs):
         """
@@ -149,14 +149,21 @@ class Databases:
         return Databases._instances[name] if name \
             else Databases._instances["DEFAULT"]
 
+    @staticmethod
+    def register_db(config: DatabaseConfig, qualifier: str):
+        Databases._instances[qualifier] = DatabaseClient(config)
 
-def sql(sql_statement, processor=None):
+
+def native_sql(sql_statement, modify=False, db=None):
     def sql_decorator(func):
-        engine = Databases.get_db_client(processor)
+        engine = Databases.get_db_client(db)
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            sql_result = engine.exec(sql_statement, **kwargs)
+            if modify:
+                sql_result = engine.execute(sql_statement, **kwargs)
+            else:
+                sql_result = engine.query(sql_statement, **kwargs)
             return sql_result
 
         return wrapper

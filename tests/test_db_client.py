@@ -11,11 +11,13 @@ from sqlmodel import SQLModel
 
 from qpydao import SqlResultMapper
 from qpydao.bootstrap import init_pg_database
-from qpydao.client import DatabaseClient
+from qpydao.client import DatabaseClient, Databases
 from qpydao.models import DatabaseConfig
 
 db_config = DatabaseConfig(url="sqlite:///test.db")
 dao = DatabaseClient(config=db_config)
+
+default_client = Databases.default_client(db_config)
 
 
 class Hero(SQLModel, table=True):

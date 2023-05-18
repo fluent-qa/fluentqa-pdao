@@ -1,7 +1,7 @@
-from qpydao import DatabaseClient, DatabaseConfig
+from qpydao import DatabaseConfig, Databases
 
 
-class BaseRepository(DatabaseClient):
+class BaseRepository:
 
     def __init__(self, config: DatabaseConfig = None):
-        super().__init__(config)
+        self.db_client = Databases.default_client(config)
