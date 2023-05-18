@@ -29,7 +29,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-alembic = "^1.10.4"
+alembic = "^1.11.1"
 sqlmodel = "^0.0.8"
 #qpybase = { git = "https://github.com/fluent-qa/fluentqa-pybase.git", branch = "main" }
 
