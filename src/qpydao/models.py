@@ -10,6 +10,12 @@ class DatabaseConfig(BaseModel):
     additional: Dict[str, Any] = None
 
 
+class SqlRequestModel(BaseModel):
+    config: DatabaseConfig
+    sql: str
+    parameters: Dict = {}
+
+
 class FieldMeta(BaseModel):
     field_name: str
     field_type: str
@@ -20,4 +26,3 @@ class FieldMeta(BaseModel):
 class TableMeta(BaseModel):
     table_name: str
     fields: list[FieldMeta]
-

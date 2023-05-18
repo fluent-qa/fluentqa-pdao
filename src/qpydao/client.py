@@ -8,7 +8,7 @@ from sqlalchemy import text
 from sqlmodel import Session, SQLModel
 
 from qpydao.exceptions import DAOException
-from qpydao.models import DatabaseConfig
+from qpydao.models import DatabaseConfig, SqlRequestModel
 from qpydao.sql_utils import SqlBuilder, SqlResultMapper
 
 """
@@ -130,6 +130,15 @@ class DatabaseClient:
             session.exec(statement)
             session.commit()
 
+    def invoke(self, request: SqlRequestModel):
+        """
+        TODO: SQL Injection Protection
+        :param request:
+        :return:
+        """
+        client = Databases.register_db(request.config,request.config.url)
+        return client.execute(request.sql, **request.parameters)
+
 
 class Databases:
     _instances = {}
@@ -152,6 +161,7 @@ class Databases:
     @staticmethod
     def register_db(config: DatabaseConfig, qualifier: str):
         Databases._instances[qualifier] = DatabaseClient(config)
+        return Databases._instances[qualifier]
 
 
 def native_sql(sql_statement, modify=False, db=None):
