@@ -136,7 +136,7 @@ class DatabaseClient:
         :param request:
         :return:
         """
-        client = Databases.register_db(request.config,request.config.url)
+        client = Databases.register_db(request.config, request.config.url)
         return client.execute(request.sql, **request.parameters)
 
 
@@ -144,7 +144,7 @@ class Databases:
     _instances = {}
 
     @staticmethod
-    def default_client(config: DatabaseConfig = None):
+    def default_client(config: DatabaseConfig = None) -> DatabaseClient:
         if Databases._instances.get("DEFAULT") is None:
             if config is None:
                 raise DAOException("No Database Default Config Found")
@@ -154,7 +154,7 @@ class Databases:
         return Databases._instances["DEFAULT"]
 
     @staticmethod
-    def get_db_client(name: str = None):
+    def get_db_client(name: str = None) -> DatabaseClient:
         return Databases._instances[name] if name \
             else Databases._instances["DEFAULT"]
 
