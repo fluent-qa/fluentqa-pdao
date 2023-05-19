@@ -4,33 +4,13 @@
 # pip install psycopg2-binary
 import datetime
 
-import pytest
-
 from sqlmodel import Field, select
 from sqlmodel import SQLModel
 
 from qpydao import SqlResultMapper
-from qpydao.bootstrap import init_pg_database
-from qpydao.client import DatabaseClient, Databases
-from qpydao.models import DatabaseConfig
+from tests.fixtures_db import Hero, dao, init_db_test
 
-db_config = DatabaseConfig(url="sqlite:///test.db")
-dao = DatabaseClient(config=db_config)
-
-default_client = Databases.default_client(db_config)
-
-
-class Hero(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str
-    secret_name: str
-    age: int | None = None
-    created_date: datetime.datetime = datetime.datetime.now()
-
-
-def test_init_database():
-    init_pg_database(dao)
-
+init_db_test()
 
 def test_create_engine():
     h1 = Hero(name="test3", secret_name="scret_name", age=10)

@@ -98,7 +98,7 @@ def test_db_model():
     )
     pg = DatabaseClient(config=db_config)
     result = pg.query(query_field.format("api_monitor_record"))
-    model_result = sql_result_to_model(result, models.FieldMeta)
+    model_result = SqlResultMapper.sql_result_to_model(result, models.FieldMeta)
     print(model_result)
     for model in model_result:
         if model.field_name == "id":

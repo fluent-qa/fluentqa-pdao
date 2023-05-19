@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=master&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions?query=workflow%3Abuild)
+[![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=main&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions?query=workflow%3Abuild)
 ![Coverage Report](assets/images/coverage.svg)
 
 `fluentqa_pdao` is a Python package for database operation
@@ -48,16 +48,24 @@ git remote add origin https://github.com/fluent-qa/fluentqa-pdao.git
 git push -u origin main
 ```
 
+## 项目中使用:
+
+添加以下依赖到pyproject.toml文件
+
+```shell
+qpydao = { git = "https://github.com/fluent-qa/fluentqa-pdao.git", branch = "main" }
+```
+
 ## 目标
 
 1. 可以使用pydantic model
-2. 也可以使用sqlachmey
+2. 也可以使用sqlachmey/sqlmodel
 3. 能够支持常用的DAO模式:
    - [X] 直接CRUD
-   - [] Repository 模式
-   - [] Model 支持直接操作数据库
-   - [] Async支持+Session封装
-   - [] 支持多数据库
+   - [X] Repository 模式
+   - [X] Model 支持直接操作数据库
+   - [X] Async支持+Session封装
+   - [X] 支持多数据库
 4. event listener on entity change
 5. code generation
 6. CRUD operation 
