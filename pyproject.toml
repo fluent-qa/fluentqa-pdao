@@ -40,7 +40,7 @@ pre-commit = "^3.3.2"
 isort = {extras = ["colors"], version = "^5.11.4"}
 darglint = "^1.8.1"
 pytest-html = "^3.2.0"
-coverage = "^7.2.5"
+coverage = "^7.2.7"
 coverage-badge = "^1.1.0"
 black = "^23.3.0"
 pytest-cov = "^4.0.0"
