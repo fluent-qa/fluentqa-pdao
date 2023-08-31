@@ -3,11 +3,11 @@ from qpydao.repository import BaseRepository
 
 from .fixtures_db import *
 
+
 init_db_test()
 
 
 class HeroRepo(BaseRepository):
-
     @native_sql("select * from hero")
     def find_hero(self):
         ...
@@ -20,7 +20,7 @@ class HeroRepo(BaseRepository):
     def find_hero_by_name(self, name):
         ...
 
-    @native_sql("update hero set name= :new_name where name= :name",modify=True)
+    @native_sql("update hero set name= :new_name where name= :name", modify=True)
     def update_name(self, name, new_name):
         ...
 
@@ -33,5 +33,5 @@ def test_query_by_decor():
     print(result)
     result = repo.find_hero_by_name(name="test3", age=10)
     print(result)
-    repo.update_name(name="test4",new_name="test_name_4")
+    repo.update_name(name="test4", new_name="test_name_4")
     print(repo.find_hero_by_name(name="test_name_4"))

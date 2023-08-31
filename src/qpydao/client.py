@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 import typing
+
 from functools import wraps
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy import text
-from sqlmodel import Session, SQLModel
+from sqlmodel import Session
+from sqlmodel import SQLModel
 
 from qpydao.exceptions import DAOException
-from qpydao.models import DatabaseConfig, SqlRequestModel
-from qpydao.sql_utils import SqlBuilder, SqlResultMapper
+from qpydao.models import DatabaseConfig
+from qpydao.models import SqlRequestModel
+from qpydao.sql_utils import SqlBuilder
+from qpydao.sql_utils import SqlResultMapper
+
 
 """
 1. database client to do simple database operations
@@ -155,8 +160,7 @@ class Databases:
 
     @staticmethod
     def get_db_client(name: str = None) -> DatabaseClient:
-        return Databases._instances[name] if name \
-            else Databases._instances["DEFAULT"]
+        return Databases._instances[name] if name else Databases._instances["DEFAULT"]
 
     @staticmethod
     def register_db(config: DatabaseConfig, qualifier: str):

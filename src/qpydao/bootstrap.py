@@ -12,5 +12,7 @@ def init_pg_database(database: DatabaseClient, schema_name: str = None):
     :return:
     """
     SQLModel.metadata.create_all(database.engine)
-    metadata = MetaData(schema=schema_name,)
+    metadata = MetaData(
+        schema=schema_name,
+    )
     metadata.create_all(database.engine)

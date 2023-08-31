@@ -1,8 +1,13 @@
 from datetime import datetime
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field
+from sqlmodel import SQLModel
 
-from qpydao import DatabaseConfig, DatabaseClient, Databases, init_pg_database
+from qpydao import DatabaseClient
+from qpydao import DatabaseConfig
+from qpydao import Databases
+from qpydao import init_pg_database
+
 
 db_config = DatabaseConfig(url="sqlite:///test.db")
 dao = DatabaseClient(config=db_config)

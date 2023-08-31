@@ -4,13 +4,18 @@
 # pip install psycopg2-binary
 import datetime
 
-from sqlmodel import Field, select
+from sqlmodel import Field
 from sqlmodel import SQLModel
+from sqlmodel import select
 
 from qpydao import SqlResultMapper
-from tests.fixtures_db import Hero, dao, init_db_test
+from tests.fixtures_db import Hero
+from tests.fixtures_db import dao
+from tests.fixtures_db import init_db_test
+
 
 init_db_test()
+
 
 def test_create_engine():
     h1 = Hero(name="test3", secret_name="scret_name", age=10)

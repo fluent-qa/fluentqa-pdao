@@ -1,12 +1,15 @@
 from typing import Any
 
 from pydantic import BaseModel
-from sqlmodel import text, delete, select, update, SQLModel
 from sqlalchemy.exc import ResourceClosedError
+from sqlmodel import SQLModel
+from sqlmodel import delete
+from sqlmodel import select
+from sqlmodel import text
+from sqlmodel import update
 
 
 class SqlBuilder:
-
     @staticmethod
     def from_plain_sql(plain_sql, **kwargs):
         s = text(plain_sql, **kwargs)
@@ -30,9 +33,12 @@ class SqlBuilder:
 
     @staticmethod
     def build_update_statement(instance: type[SQLModel], **kwargs):
-        return update(type(instance)) \
-            .filter_by(id=getattr(instance, "id")) \
-            .filter_by(**kwargs).values(**instance.dict())
+        return (
+            update(type(instance))
+            .filter_by(id=getattr(instance, "id"))
+            .filter_by(**kwargs)
+            .values(**instance.dict())
+        )
 
 
 class SqlResultMapper:
