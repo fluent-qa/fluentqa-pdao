@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=main&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions?query=workflow%3Abuild)
+[![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=main&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions/workflows/build.yml/badge.svg)
 ![Coverage Report](assets/images/coverage.svg)
 
 `fluentqa_pdao` is a Python package for database operation
