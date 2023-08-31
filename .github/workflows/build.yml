@@ -12,11 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-<<<<<<< HEAD
-      uses: actions/setup-python@v4.7.0
-=======
       uses: actions/setup-python@v4
->>>>>>> b704461 (add workflows)
       with:
         python-version: ${{ matrix.python-version }}
 
