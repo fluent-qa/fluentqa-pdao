@@ -1,0 +1,10 @@
+[run]
+branch = true
+source = ["tests", "qpydao"]
+
+[paths]
+source = "qpydao"
+
+[report]
+fail_under = 50
+show_missing = true
