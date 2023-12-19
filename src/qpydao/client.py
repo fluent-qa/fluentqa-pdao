@@ -6,6 +6,7 @@ from functools import wraps
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy import text
+from sqlalchemy.dialects.postgresql import psycopg2
 from sqlmodel import Session
 from sqlmodel import SQLModel
 
@@ -66,7 +67,7 @@ class DatabaseClient:
             s.commit()
         return instances
 
-    def query(self, plain_sql: str, **kwargs):
+    def query(self, plain_sql: str, **kwargs) -> list[typing.Mapping[typing.Any, typing.Any]]:
         """
         execute sql with binding parameters
         :param plain_sql:
@@ -75,7 +76,7 @@ class DatabaseClient:
         """
         s = text(plain_sql)
         with self.engine.connect() as conn:
-            result = conn.execute(s, kwargs)
+            result = conn.execute(s, kwargs).mappings().all()
         return result
 
     def execute(self, plain_sql: str, **kwargs):
@@ -85,9 +86,9 @@ class DatabaseClient:
         :param kwargs:
         :return:
         """
-        # s = SqlBuilder.from_plain_sql(plain_sql, **kwargs)
+        s = SqlBuilder.from_plain_sql(plain_sql)
         with self.engine.connect() as conn:
-            return conn.execute(plain_sql, **kwargs)
+            return conn.execute(s, kwargs)
 
     def query_for_objects(self, plain_sql, result_type: type[BaseModel], **kwargs):
         """
@@ -149,7 +150,7 @@ class Databases:
     _instances = {}
 
     @staticmethod
-    def default_client(config: DatabaseConfig = None) -> DatabaseClient:
+    def default_client(config: DatabaseConfig = None):
         if Databases._instances.get("DEFAULT") is None:
             if config is None:
                 raise DAOException("No Database Default Config Found")
@@ -159,7 +160,7 @@ class Databases:
         return Databases._instances["DEFAULT"]
 
     @staticmethod
-    def get_db_client(name: str = None) -> DatabaseClient:
+    def get_db_client(name: str = None):
         return Databases._instances[name] if name else Databases._instances["DEFAULT"]
 
     @staticmethod
@@ -183,3 +184,77 @@ def native_sql(sql_statement, modify=False, db=None):
         return wrapper
 
     return sql_decorator
+
+
+class GenericDao:
+    def __init__(self, host, port, username, password, database, auto_commit=True):
+        try:
+            self.connection = psycopg2.connect(
+                host=host,
+                port=port,
+                database=database,
+                user=username,
+                password=password,
+            )
+            self.auto_commit = auto_commit
+        except Exception as e:
+            print("Error while connecting to PostgreSQL", e)
+            self.__close_connection()
+
+    def select(self, sql):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except Exception as e:
+            print("Error while access MySQL", e)
+            self.__close_connection()
+        finally:
+            cursor.close()
+
+    def insert(self, sql, values):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(sql, values)
+            if self.auto_commit:
+                self.commit()
+            return cursor.lastrowid
+        except Exception as e:
+            print("Error while access MySQL", e)
+            self.__close_connection()
+        finally:
+            cursor.close()
+
+    def execute_sql(self, sql):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(sql)
+            if self.auto_commit:
+                self.commit()
+            return cursor.lastrowid
+        except Exception as e:
+            print("Error while access MySQL", e)
+            self.__close_connection()
+        finally:
+            cursor.close()
+
+    def __close_connection(self):
+        if self.connection is None:
+            return
+        if self.connection.is_connected():
+            self.connection.close()
+            print("PgSql connection is closed")
+
+    def commit(self):
+        self.connection.commit()
+
+    @staticmethod
+    def get_dao(host, port, username, password, database, auto_commit=True):
+        return GenericDao(
+            host=host,
+            port=port,
+            username=username,
+            password=password,
+            database=database,
+            auto_commit=auto_commit,
+        )

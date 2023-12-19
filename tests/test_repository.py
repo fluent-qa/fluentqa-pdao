@@ -1,5 +1,5 @@
-from fluentdao import native_sql
-from fluentdao.repository import BaseRepository
+from qpydao import native_sql
+from qpydao.repository import BaseRepository
 
 from .fixtures_db import *
 

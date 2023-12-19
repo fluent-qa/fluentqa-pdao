@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "fluentdao"
+name = "qpydao"
 version = "0.1.0"
 description = "fluent-dao is a simple data access toolkit"
 readme = "README.md"
@@ -19,13 +19,13 @@ classifiers = [  #! Update me
   "Programming Language :: Python :: 3",
 ]
 packages = [
-    { include = "fluentdao", from="src"},
+    { include = "qpydao", from="src"},
 ]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<=3.12"
 alembic = "^1.10.4"
-fluentstructs = { git = "git@github.com:fluent-qa/fluent-structs.git", branch = "main" }
+qpystructs = { git = "git@github.com:qdriven/fluentqa-models.git", branch = "main" }
 sqlalchemy = "^2.0.23"
 sqlmodel = "^0.0.14"
 
@@ -99,7 +99,7 @@ addopts = [
 source = ["tests"]
 
 [coverage.paths]
-source = "fluentdao"
+source = "qpydao"
 
 [coverage.run]
 branch = true

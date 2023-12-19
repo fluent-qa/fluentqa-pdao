@@ -8,7 +8,7 @@ from sqlmodel import Field
 from sqlmodel import SQLModel
 from sqlmodel import select
 
-from fluentdao import SqlResultMapper
+from qpydao import SqlResultMapper
 from tests.fixtures_db import Hero
 from tests.fixtures_db import dao
 from tests.fixtures_db import init_db_test

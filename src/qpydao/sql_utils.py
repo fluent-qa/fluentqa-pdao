@@ -1,4 +1,6 @@
 from typing import Any
+from typing import Dict
+from typing import List
 
 from pydantic import BaseModel
 from sqlalchemy.exc import ResourceClosedError
@@ -37,32 +39,21 @@ class SqlBuilder:
             update(type(instance))
             .filter_by(id=getattr(instance, "id"))
             .filter_by(**kwargs)
-            .values(**instance.dict())
+            .values(**instance.model_dump())
         )
 
 
 class SqlResultMapper:
     @staticmethod
-    def sql_result_to_model(result, model_type: type[BaseModel]) -> list[Any]:
+    def sql_result_to_model(
+        result: List[Dict], model_type: type[BaseModel]
+    ) -> list[Any]:
         all_list = []
         try:
             for row in result:
-                result_dict = {}
-                for key in row.keys():
-                    result_dict[key] = str(row[key])
-                all_list.append(model_type(**result_dict))
+                all_list.append(model_type(**row))
         except ResourceClosedError as e:
             print(e)
-        return all_list
-
-    @staticmethod
-    def sql_result_to_dict(result) -> list[dict]:
-        all_list = []
-        for row in result:
-            result_dict = {}
-            for key in result.keys():
-                result_dict[key] = str(row[key])
-            all_list.append(result_dict)
         return all_list
 
     @staticmethod
