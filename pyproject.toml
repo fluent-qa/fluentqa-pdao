@@ -23,7 +23,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 alembic = "^1.10.4"
 fluentstructs = { git = "git@github.com:fluent-qa/fluent-structs.git", branch = "main" }
 sqlalchemy = "^2.0.23"
