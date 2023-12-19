@@ -3,10 +3,10 @@ from datetime import datetime
 from sqlmodel import Field
 from sqlmodel import SQLModel
 
-from qpydao import DatabaseClient
-from qpydao import DatabaseConfig
-from qpydao import Databases
-from qpydao import init_pg_database
+from fluentdao import DatabaseClient
+from fluentdao import DatabaseConfig
+from fluentdao import Databases
+from fluentdao import init_pg_database
 
 
 db_config = DatabaseConfig(url="sqlite:///test.db")

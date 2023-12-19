@@ -1,5 +1,5 @@
-from qpydao import native_sql
-from qpydao.repository import BaseRepository
+from fluentdao import native_sql
+from fluentdao.repository import BaseRepository
 
 from .fixtures_db import *
 
@@ -13,7 +13,7 @@ class HeroRepo(BaseRepository):
         ...
 
     @native_sql("select * from hero where name=:name and age=:age")
-    def find_hero_by_name(self, name, age):
+    def find_hero_by_name_and_age(self, name, age):
         ...
 
     @native_sql("select * from hero where name= :name")
@@ -31,7 +31,7 @@ repo = HeroRepo()
 def test_query_by_decor():
     result = repo.find_hero()
     print(result)
-    result = repo.find_hero_by_name(name="test3", age=10)
+    result = repo.find_hero_by_name(name="test3")
     print(result)
     repo.update_name(name="test4", new_name="test_name_4")
-    print(repo.find_hero_by_name(name="test_name_4"))
+    print(repo.find_hero_by_name_and_age(name="test_name_4",age=10))

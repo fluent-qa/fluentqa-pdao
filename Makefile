@@ -23,6 +23,8 @@ pytestcache-remove:
 build-remove:
 	rm -rf build/
 	rm -rf dist/
+	rm -rf htmlcov
+	rm -rf .coverage
 
 .PHONY: cleanup
 cleanup: pycache-remove dsstore-remove mypycache-remove ipynbcheckpoints-remove pytestcache-remove build-remove
@@ -50,5 +52,5 @@ lint: test check-codestyle codestyle
 
 .PHONY: test
 test:
-	PYTHONPATH=$(PYTHONPATH) poetry run pytest -c pyproject.toml --cov-report=html --cov=qpydao tests/
+	PYTHONPATH=$(PYTHONPATH) poetry run pytest -c pyproject.toml --cov-report=html --cov=fluentdao tests/
 	poetry run coverage-badge -o assets/images/coverage.svg -f

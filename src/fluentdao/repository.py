@@ -1,5 +1,4 @@
-from qpydao import DatabaseConfig
-from qpydao import Databases
+from . import DatabaseConfig, Databases
 
 
 class BaseRepository:

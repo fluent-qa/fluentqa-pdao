@@ -8,7 +8,7 @@ from sqlmodel import Field
 from sqlmodel import SQLModel
 from sqlmodel import select
 
-from qpydao import SqlResultMapper
+from fluentdao import SqlResultMapper
 from tests.fixtures_db import Hero
 from tests.fixtures_db import dao
 from tests.fixtures_db import init_db_test
@@ -57,10 +57,8 @@ def test_query_all():
 
 
 def test_query_bind_params():
-    sql = """
-    select * from hero where name=:name
-    """
-    raw_result = dao.query(sql, **{"name": "test6"})
+    sql = f'select * from hero where name=:name'
+    raw_result = dao.query(sql,name="test6")
     result = SqlResultMapper.sql_result_to_model(raw_result, Hero)
     print(result)
     objects = dao.query_for_objects(sql, Hero, **{"name": "test6"})

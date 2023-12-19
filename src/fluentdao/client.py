@@ -9,11 +9,11 @@ from sqlalchemy import text
 from sqlmodel import Session
 from sqlmodel import SQLModel
 
-from qpydao.exceptions import DAOException
-from qpydao.models import DatabaseConfig
-from qpydao.models import SqlRequestModel
-from qpydao.sql_utils import SqlBuilder
-from qpydao.sql_utils import SqlResultMapper
+from .exceptions import DAOException
+from .models import DatabaseConfig
+from .models import SqlRequestModel
+from .sql_utils import SqlBuilder
+from .sql_utils import SqlResultMapper
 
 
 """
@@ -75,7 +75,7 @@ class DatabaseClient:
         """
         s = text(plain_sql)
         with self.engine.connect() as conn:
-            result = conn.execute(s, **kwargs).fetchall()
+            result = conn.execute(s, kwargs)
         return result
 
     def execute(self, plain_sql: str, **kwargs):
