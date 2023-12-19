@@ -25,7 +25,8 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.10,<=3.12"
 alembic = "^1.10.4"
-qpystructs = { git = "git@github.com:qdriven/fluentqa-models.git", branch = "main" }
+# qpystructs = { git = "git@github.com:qdriven/fluentqa-models.git", branch = "main" }
+qpystructs = { path = "../fluentqa-models", develop = true }
 sqlalchemy = "^2.0.23"
 sqlmodel = "^0.0.14"
 
