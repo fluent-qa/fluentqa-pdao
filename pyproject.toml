@@ -28,6 +28,7 @@ alembic = "^1.10.4"
 qpystructs = { path = "../fluent-structs", develop = true }
 sqlalchemy = "^2.0.23"
 sqlmodel = "^0.0.14"
+psycopg2-binary = "^2.9.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.0"
