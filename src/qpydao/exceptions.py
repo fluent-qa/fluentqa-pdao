@@ -4,3 +4,9 @@ class RecordNotFoundException(RuntimeError):
 
 class DAOException(RuntimeError):
     pass
+
+
+class DBNotPreparedError(Exception):
+    """
+    DB Not Prepared Error
+    """

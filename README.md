@@ -160,4 +160,6 @@ def test_query_by_decor():
 
 ## More
 
+integrate with dl-sql:
+- [dl-sql](https://github.com/adobe/dy-sql.git)
 

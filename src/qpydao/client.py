@@ -258,3 +258,5 @@ class GenericDao:
             database=database,
             auto_commit=auto_commit,
         )
+
+
