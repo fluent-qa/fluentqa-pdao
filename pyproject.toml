@@ -23,7 +23,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<=3.12"
+python=">=3.9,<3.12"
 alembic = "^1.10.4"
 qpystructs = { path = "../fluent-structs", develop = true }
 sqlalchemy = "^2.0.23"
