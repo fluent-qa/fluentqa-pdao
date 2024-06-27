@@ -245,5 +245,3 @@ class Databases(metaclass=SingletonMeta):
         else:
             return self._databases[db_name]
 
-
-databases = Databases()
