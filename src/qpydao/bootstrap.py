@@ -1,10 +1,10 @@
 from sqlalchemy import MetaData
 from sqlmodel import SQLModel
 
-from .client import DatabaseClient
+from qpydao import DatabaseClient, db
 
 
-def init_pg_database(database: DatabaseClient, schema_name: str = None):
+def init_database(database: DatabaseClient = db, schema_name: str = None):
     """
     init postgresql database
     :param database:

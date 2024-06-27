@@ -2,17 +2,12 @@
 # postgresql: postgresql: // scott: tiger @ localhost:5432 / mydatabase
 # jdbc:postgresql://localhost:5432/mydatabase?currentSchema=myschema
 # pip install psycopg2-binary
-import datetime
-
-from sqlmodel import Field
-from sqlmodel import SQLModel
 from sqlmodel import select
 
-from qpydao import SqlResultMapper
+from qpydao.core.sql_utils import SqlResultMapper
 from tests.fixtures_db import Hero
 from tests.fixtures_db import dao
 from tests.fixtures_db import init_db_test
-
 
 init_db_test()
 
@@ -48,26 +43,28 @@ def test_query_all():
     sql = """
     select * from hero
     """
-    raw_result = dao.query(sql)
+    raw_result = dao.plain_query(sql)
     result = SqlResultMapper.sql_result_to_model(raw_result, Hero)
     print(result)
 
-    objects = dao.query_for_objects(sql, Hero)
-    print(objects)
+
+def test_query_for_model():
+    raw_result = dao.query_for_model(select(Hero))
+    print(raw_result)
 
 
 def test_query_bind_params():
     sql = f'select * from hero where name=:name'
-    raw_result = dao.query(sql,name="test6")
+    raw_result = dao.plain_query(sql, name="test6")
     result = SqlResultMapper.sql_result_to_model(raw_result, Hero)
     print(result)
-    objects = dao.query_for_objects(sql, Hero, **{"name": "test6"})
+    objects = dao.find_by(Hero, **{"name": "test6"})
     print(objects)
 
 
 def test_use_sqlmodel_statement():
     s = select(Hero).where(Hero.name == "test6")
-    result = dao.query_by_statement(s)
+    result = dao.query_for_model(s)
     print(result)
 
 

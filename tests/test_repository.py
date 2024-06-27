@@ -1,20 +1,20 @@
-from qpydao import native_sql
-from qpydao.repository import BaseRepository
-
+from qpydao import databases
+from qpydao.core.decorators import native_sql
+from qpydao.repository import RepositoryMeta
 from .fixtures_db import *
-
 
 init_db_test()
 
 
-class HeroRepo(BaseRepository):
+class HeroRepo(metaclass=RepositoryMeta, base_type=Hero):
+
     @native_sql("select * from hero")
     def find_hero(self):
-        ...
+        pass
 
     @native_sql("select * from hero where name=:name and age=:age")
     def find_hero_by_name_and_age(self, name, age):
-        ...
+        pass
 
     @native_sql("select * from hero where name= :name")
     def find_hero_by_name(self, name):
@@ -22,16 +22,18 @@ class HeroRepo(BaseRepository):
 
     @native_sql("update hero set name= :new_name where name= :name", modify=True)
     def update_name(self, name, new_name):
-        ...
+        pass
 
 
-repo = HeroRepo()
+def test_default_db():
+    db = databases.get_db("default")
+    print(db)
 
 
-def test_query_by_decor():
+def test_repo():
+    repo = HeroRepo()
+    print(repo)
     result = repo.find_hero()
     print(result)
-    result = repo.find_hero_by_name(name="test3")
-    print(result)
-    repo.update_name(name="test4", new_name="test_name_4")
-    print(repo.find_hero_by_name_and_age(name="test_name_4",age=10))
+    repo.find_hero_by_name(name="new_test")
+    repo.update_name(name="test", new_name="new_test")

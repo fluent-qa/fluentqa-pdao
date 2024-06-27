@@ -9,6 +9,16 @@
 
 </div>
 
+## Features:
+
+1. [] easy to connect database 
+2. [] easy to do sql operations CRUD
+3. [] easy to support different mapper to python class
+4. [] easy to generate sql and create sql version
+5. [] easy to integrate with other libs
+6. [] support async operations
+7. [] support supabase
+
 ## Very first steps
 
 ### Initialize your code

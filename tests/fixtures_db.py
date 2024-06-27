@@ -1,22 +1,22 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from sqlmodel import Field
 from sqlmodel import SQLModel
 
-from qpydao import DatabaseClient
-from qpydao import DatabaseConfig
+from qpydao import DatabaseClient, DatabaseConfig, BaseIDModel, databases
 from qpydao import Databases
-from qpydao import init_pg_database
+from qpydao.bootstrap import init_database
+
+# db_config = DatabaseConfig(db_url="sqlite:///test.db")
+dao = databases.get_db("default")
+
+# default_client = databases.register_db("default", db_config)
 
 
-db_config = DatabaseConfig(url="sqlite:///test.db")
-dao = DatabaseClient(config=db_config)
-
-default_client = Databases.default_client(db_config)
-
-
-class Hero(SQLModel, table=True, extend_existing=True):
-    id: int | None = Field(default=None, primary_key=True)
+class Hero(BaseIDModel, table=True, extend_existing=True):
+    # id: int | None = Field(default=None, primary_key=True)
     name: str
     secret_name: str
     age: int | None = None
@@ -25,7 +25,7 @@ class Hero(SQLModel, table=True, extend_existing=True):
 
 def init_db_test():
     try:
-        init_pg_database(dao)
+        init_database(dao)
 
         h1 = Hero(name="test3", secret_name="scret_name", age=10)
         h2 = Hero(name="test4", secret_name="scret_name", age=10)
