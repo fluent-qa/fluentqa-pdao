@@ -2,6 +2,7 @@
 # postgresql: postgresql: // scott: tiger @ localhost:5432 / mydatabase
 # jdbc:postgresql://localhost:5432/mydatabase?currentSchema=myschema
 # pip install psycopg2-binary
+import pytest
 from sqlmodel import select
 
 from qpydao.core.sql_utils import SqlResultMapper
@@ -38,12 +39,12 @@ def test_batch_save():
     for instance in instances:
         print(instance.json())
 
-
-def test_query_all():
+@pytest.mark.asyncio
+async def test_query_all():
     sql = """
     select * from hero
     """
-    raw_result = dao.plain_query(sql)
+    raw_result = await dao.async_plain_query(sql)
     result = SqlResultMapper.sql_result_to_model(raw_result, Hero)
     print(result)
 

@@ -1,4 +1,4 @@
-from qpydao import DatabaseClient, DatabaseConfig, database_config, db
+from qpydao import DatabaseClient, DatabaseConfig, database_config, db, Databases, databases
 
 config = database_config()
 client = DatabaseClient(config=config)
@@ -18,3 +18,8 @@ def test_engines():
 def test_default_client():
     print(db.engine)
     print(db.async_engine)
+
+
+def test_database_singleton():
+    db = Databases()
+    assert databases == db

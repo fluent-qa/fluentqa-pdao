@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import typing
-from typing import Sequence, Any
+from typing import Sequence, Any, Coroutine
 
 import sqlalchemy
-from sqlalchemy import text, RowMapping, Row
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import text, RowMapping, Row, Result
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlmodel import SQLModel, Session, select
 
-from qpydao.core.models import DatabaseConfig, database_config, SqlRequestModel
+from qpydao.core.models import DatabaseConfig, database_config, SqlRequestModel, SingletonMeta
 from qpyconf import settings
 from .exceptions import DAOException
 
@@ -74,6 +74,18 @@ class DatabaseClient:
             s.refresh(instance)
         return instance
 
+    def async_save(self, instance: SQLModel | typing.Any):
+        """
+        save a sql model instance
+        :param instance:
+        :return:
+        """
+        with AsyncSession(self.async_engine) as s:
+            s.add(instance)
+            s.commit()
+            s.refresh(instance)
+        return instance
+
     def batch_save(self, instances: typing.List[SQLModel | typing.Any]):
         with Session(self.engine) as s:
             s.bulk_save_objects(instances, return_defaults=True)
@@ -92,8 +104,25 @@ class DatabaseClient:
             result = conn.execute(s, kwargs).mappings().all()
         return result
 
+    async def async_plain_query(self, plain_sql: str, **kwargs) -> Sequence[RowMapping]:
+        """
+        execute sql with binding parameters
+        :param plain_sql:
+        :param kwargs:
+        :return:
+        """
+        s = text(plain_sql)
+        async with AsyncSession(self.async_engine) as conn:
+            result = await conn.execute(s, kwargs)
+        return result.mappings().all()
+
     def query_for_model(self, statement: select) -> Sequence[Row[Any] | RowMapping | Any]:
         with Session(self.engine) as session:
+            result = session.exec(statement).fetchall()
+        return result
+
+    def async_query_for_model(self, statement: select) -> Sequence[Row[Any] | RowMapping | Any]:
+        with AsyncSession(self.engine) as session:
             result = session.exec(statement).fetchall()
         return result
 
@@ -108,16 +137,46 @@ class DatabaseClient:
         with self.engine.connect() as conn:
             return conn.execute(s, kwargs)
 
+    async def async_execute(self, plain_sql: str, **kwargs):
+        """
+        execute sql
+        :param plain_sql:
+        :param kwargs:
+        :return:
+        """
+        s = SqlBuilder.from_plain_sql(plain_sql)
+        with self.async_engine.connect() as conn:
+            return conn.execute(s, kwargs)
+
     def find_by(self, entity: [SQLModel], **kwargs) -> Sequence[Row[Any] | RowMapping | Any]:
         query = SqlBuilder.build_select_query(entity, **kwargs)
         return self.query_for_model(statement=query)
 
+    async def async_find_by(self, entity: [SQLModel], **kwargs) -> Sequence[Row[Any] | RowMapping | Any]:
+        query = SqlBuilder.build_select_query(entity, **kwargs)
+        return self.async_query_for_model(statement=query)
+
     def find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
         return self.one_or_none(entity, **kwargs)
+
+    async def async_find_one(self, entity: [SQLModel], **kwargs) -> Coroutine[Any, Any, Any]:
+        return self.async_one_or_none(entity, **kwargs)
 
     def one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
         query = SqlBuilder.build_select_query(entity, **kwargs)
         result = self.query_for_model(statement=query)
+        if len(result) < 1:
+            # raise RecordNotFoundException("Record Not Found", kwargs)
+            return None
+        else:
+            return result[0]
+
+    async def async_one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
+        """
+        TODO: Check Out Work or Not
+        """
+        query = SqlBuilder.build_select_query(entity, **kwargs)
+        result = self.async_query_for_model(statement=query)
         if len(result) < 1:
             # raise RecordNotFoundException("Record Not Found", kwargs)
             return None
@@ -139,7 +198,7 @@ class DatabaseClient:
             session.commit()
 
 
-class Databases:
+class Databases(metaclass=SingletonMeta):
 
     def __init__(self, conf=settings.DATABASES):
         self._databases = {}
@@ -186,5 +245,3 @@ class Databases:
         else:
             return self._databases[db_name]
 
-
-databases = Databases()

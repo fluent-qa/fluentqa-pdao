@@ -11,52 +11,14 @@
 
 ## Features:
 
-1. [] easy to connect database 
-2. [] easy to do sql operations CRUD
-3. [] easy to support different mapper to python class
-4. [] easy to generate sql and create sql version
-5. [] easy to integrate with other libs
-6. [] support async operations
-7. [] support supabase
+1. [X] easy to connect database 
+2. [X] easy to do sql operations CRUD
+3. [X] easy to support different mapper to python class
+4. [X] easy to generate sql and create sql version
+5. [X] easy to integrate with other libs
+6. [X] support async operations
+7. [X] support supabase
 
-## Very first steps
-
-### Initialize your code
-
-1. Initialize `git` inside your repo:
-
-```bash
-cd fluentqa-pdao && git init
-```
-
-2. If you don't have `Poetry` installed run:
-
-```bash
-make poetry-download
-```
-
-3. Initialize poetry and install `pre-commit` hooks:
-
-```bash
-make install
-make pre-commit-install
-```
-
-4. Run the codestyle:
-
-```bash
-make codestyle
-```
-
-5. Upload initial code to GitHub:
-
-```bash
-git add .
-git commit -m ":tada: Initial commit"
-git branch -M main
-git remote add origin https://github.com/fluent-qa/fluentqa-pdao.git
-git push -u origin main
-```
 
 ## 项目中使用:
 

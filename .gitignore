@@ -3,7 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=osx,python,pycharm,windows,visualstudio,visualstudiocode
 *.lock
 .pdm-python
-
+.venv/
 ### OSX ###
 # General
 .DS_Store
