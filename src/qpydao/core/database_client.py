@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing
-from typing import Sequence, Any
+from typing import Sequence, Any, Coroutine
 
 import sqlalchemy
 from sqlalchemy import text, RowMapping, Row, Result
@@ -159,7 +159,7 @@ class DatabaseClient:
     def find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
         return self.one_or_none(entity, **kwargs)
 
-    def async_find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
+    async def async_find_one(self, entity: [SQLModel], **kwargs) -> Coroutine[Any, Any, Any]:
         return self.async_one_or_none(entity, **kwargs)
 
     def one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
@@ -172,8 +172,11 @@ class DatabaseClient:
             return result[0]
 
     async def async_one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
+        """
+        TODO: Check Out Work or Not
+        """
         query = SqlBuilder.build_select_query(entity, **kwargs)
-        result = await self.async_query_for_model(statement=query)
+        result = self.async_query_for_model(statement=query)
         if len(result) < 1:
             # raise RecordNotFoundException("Record Not Found", kwargs)
             return None
