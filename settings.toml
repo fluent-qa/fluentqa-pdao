@@ -1,0 +1,9 @@
+[default]
+key = "value"
+databases = { default = { db_url = "postgresql+psycopg://postgres:changeit@127.0.0.1:5432/workspace" } }
+pg_url = "postgresql+psycopg://postgres:changeit@127.0.0.1:5432/workspace"
+pg_a_url = "postgresql+psycopg_async://postgres:changeit@127.0.0.1:5432/workspace"
+
+[test]
+key = "abc"
+databases.default.url = "postgresql+psycopg_async://postgres:changeit@127.0.0.1:5432/workspace"

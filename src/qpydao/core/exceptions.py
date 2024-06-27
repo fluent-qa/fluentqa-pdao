@@ -6,7 +6,7 @@ class DAOException(RuntimeError):
     pass
 
 
-class DBNotPreparedError(Exception):
+class DatabaseClientConfigError(Exception):
     """
-    DB Not Prepared Error
+    Database Configuration is not ready
     """

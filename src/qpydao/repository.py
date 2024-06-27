@@ -1,6 +1,18 @@
-from . import DatabaseConfig, Databases
+from __future__ import annotations
+
+from typing import Any, Union
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
+from qpydao import databases
 
 
-class BaseRepository:
-    def __init__(self, config: DatabaseConfig = None):
-        self.db_client = Databases.default_client(config)
+class RepositoryMeta(type):
+    def __new__(cls, name, bases, attrs, base_type: Union[SQLModel, BaseModel, Any] = SQLModel, db_qualify='default',
+                **kwargs):
+        x = super().__new__(cls, name, bases, attrs, **kwargs)
+        x.base_type = base_type
+        x.db_qualifier = db_qualify
+        x.db_client = databases.get_db(x.db_qualifier)
+        return x

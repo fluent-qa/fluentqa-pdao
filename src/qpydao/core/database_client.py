@@ -1,0 +1,190 @@
+from __future__ import annotations
+
+import typing
+from typing import Sequence, Any
+
+import sqlalchemy
+from sqlalchemy import text, RowMapping, Row
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlmodel import SQLModel, Session, select
+
+from qpydao.core.models import DatabaseConfig, database_config, SqlRequestModel
+from qpyconf import settings
+from .exceptions import DAOException
+
+from qpydao.core.sql_utils import SqlBuilder
+
+"""
+1. database client to do simple database operations
+2. Overall Operations
+    1. Execute SQL
+    2. Pagination
+    3. Get Records - Pydantic/SQLModel
+    4. Save or Update
+    5. Delete/Soft-Delete
+    6. Like Query or With Some Dynamic Filter
+"""
+
+
+class DatabaseClient:
+    """
+    Database client, both synchronous and asynchronous.
+    """
+
+    def __init__(self, config: DatabaseConfig = None):
+        self.config = config
+        self._engine = None
+        self._async_engine = None
+
+    @property
+    def engine(self):
+        if self._engine is None:
+            self._engine = sqlalchemy.create_engine(
+                url=self.config.db_url,
+                pool_pre_ping=True,
+                pool_recycle=self.config.pool_recycle,
+                echo=self.config.echo_queries
+            )
+        return self._engine
+
+    @property
+    def async_engine(self):
+        if self._async_engine is None:
+            self._async_engine = create_async_engine(
+                url=self.config.db_url,
+                pool_pre_ping=True,
+                pool_recycle=self.config.pool_recycle,
+                echo=self.config.echo_queries
+            )
+        return self._async_engine
+
+    @staticmethod
+    def create(db_name: str) -> "DatabaseClient":
+        return DatabaseClient(database_config(db_name))
+
+    def save(self, instance: SQLModel | typing.Any):
+        """
+        save a sql model instance
+        :param instance:
+        :return:
+        """
+        with Session(self.engine) as s:
+            s.add(instance)
+            s.commit()
+            s.refresh(instance)
+        return instance
+
+    def batch_save(self, instances: typing.List[SQLModel | typing.Any]):
+        with Session(self.engine) as s:
+            s.bulk_save_objects(instances, return_defaults=True)
+            s.commit()
+        return instances
+
+    def plain_query(self, plain_sql: str, **kwargs) -> Sequence[RowMapping]:
+        """
+        execute sql with binding parameters
+        :param plain_sql:
+        :param kwargs:
+        :return:
+        """
+        s = text(plain_sql)
+        with self.engine.connect() as conn:
+            result = conn.execute(s, kwargs).mappings().all()
+        return result
+
+    def query_for_model(self, statement: select) -> Sequence[Row[Any] | RowMapping | Any]:
+        with Session(self.engine) as session:
+            result = session.exec(statement).fetchall()
+        return result
+
+    def execute(self, plain_sql: str, **kwargs):
+        """
+        execute sql
+        :param plain_sql:
+        :param kwargs:
+        :return:
+        """
+        s = SqlBuilder.from_plain_sql(plain_sql)
+        with self.engine.connect() as conn:
+            return conn.execute(s, kwargs)
+
+    def find_by(self, entity: [SQLModel], **kwargs) -> Sequence[Row[Any] | RowMapping | Any]:
+        query = SqlBuilder.build_select_query(entity, **kwargs)
+        return self.query_for_model(statement=query)
+
+    def find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
+        return self.one_or_none(entity, **kwargs)
+
+    def one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
+        query = SqlBuilder.build_select_query(entity, **kwargs)
+        result = self.query_for_model(statement=query)
+        if len(result) < 1:
+            # raise RecordNotFoundException("Record Not Found", kwargs)
+            return None
+        else:
+            return result[0]
+
+    def delete_by(self, entity: type[SQLModel], **kwargs) -> typing.NoReturn:
+        if len(kwargs.values()) == 0:
+            raise DAOException("can't execute delete without any filter")
+        with Session(self.engine) as session:
+            statement = SqlBuilder.build_delete_statement(entity, **kwargs)
+            session.exec(statement)
+            session.commit()
+
+    def update_by_id(self, instance: typing.Union[SQLModel | typing.Any]):
+        with Session(self.engine) as session:
+            statement = SqlBuilder.build_update_statement(instance)
+            session.exec(statement)
+            session.commit()
+
+
+class Databases:
+
+    def __init__(self, conf=settings.DATABASES):
+        self._databases = {}
+        self._settings = conf
+        self.__db_setup__()
+
+    def __db_setup__(self):
+        for item in self._settings:
+            self._databases[item] = DatabaseClient(database_config(item))
+
+    def __getitem__(self, name):
+        try:
+            return self._databases[name]
+        except KeyError:
+            raise KeyError(f'Database {name} does not exist')
+
+    def __getattr__(self, name):
+        try:
+            return self._databases[name]
+        except KeyError:
+            raise KeyError(f'Database {name} does not exist')
+
+    def default_client(self):
+
+        return self._databases['default']
+
+    def register_db(self, db_name: str, config: DatabaseConfig):
+
+        self._databases[db_name] = DatabaseClient(config)
+        return self._databases[db_name]
+
+    def invoke(self, request: SqlRequestModel):
+        """
+        TODO: SQL Injection Protection
+        :param request:
+        :return:
+        """
+        client = self.register_db(request.db_name, request.config)
+        return client.execute(request.sql, **request.parameters)
+
+    def get_db(self, db_name: str = None) -> DatabaseClient:
+        if db_name is None:
+            return self._databases['default']
+        else:
+            return self._databases[db_name]
+
+
+databases = Databases()
