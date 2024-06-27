@@ -126,8 +126,9 @@ lint = [
   "ruff>=0.4.9"
 ]
 test = [
-  "pytest-cov>=5.0.0",
-  "pytest>=8.2.2",
+    "pytest-cov>=5.0.0",
+    "pytest>=8.2.2",
+    "pytest-asyncio>=0.23.7",
 ]
 
 
