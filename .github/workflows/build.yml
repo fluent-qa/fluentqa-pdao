@@ -16,8 +16,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry
-      run: pip install poetry
+    - name: Install pdm
+      run: pipx install pdm
 
     - name: Set up cache
       uses: actions/cache@v4.0.2
@@ -26,10 +26,10 @@ jobs:
         key: venv-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
     - name: Install dependencies
       run: |
-        poetry install
+        pdm install
 
     - name: Run test and code styles
       run: |
-        make formatting
-        make test
-        make cleanup
+        pdm test
+        pdm cleanup
+
