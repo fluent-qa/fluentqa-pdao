@@ -5,13 +5,13 @@
 [![Build status](https://github.com/fluent-qa/fluentqa-pdao/workflows/build/badge.svg?branch=main&event=push)](https://github.com/fluent-qa/fluentqa-pdao/actions/workflows/build.yml/badge.svg)
 ![Coverage Report](assets/images/coverage.svg)
 
-`fluentqa_pdao` is a Python package for database operation
+`qpydao` is a Python package for database operation
 
 </div>
 
 ## Features:
 
-1. [X] easy to connect database 
+1. [X] easy to connect database
 2. [X] easy to do sql operations CRUD
 3. [X] easy to support different mapper to python class
 4. [X] easy to generate sql and create sql version
@@ -40,8 +40,8 @@ qpydao = { git = "https://github.com/fluent-qa/fluentqa-pdao.git", branch = "mai
    - [X] 支持多数据库
 4. event listener on entity change
 5. code generation
-6. CRUD operation 
-7. Module Registration and Auto Injection 
+6. CRUD operation
+7. Module Registration and Auto Injection
 
 ##  使用用例
 
@@ -130,4 +130,3 @@ def test_repo():
 
 integrate with dl-sql:
 - [dl-sql](https://github.com/adobe/dy-sql.git)
-
