@@ -14,7 +14,8 @@
 Icon
 # Thumbnails
 ._*
-
+test.db
+pdm.lock
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd

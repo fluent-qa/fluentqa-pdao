@@ -44,7 +44,7 @@ dependencies = [
     "sqlmodel>=0.0.19",
     "loguru>=0.7.2",
     "rich>=13.7.1",
-    "qpyconf @ file:///${PROJECT_ROOT}/../qpyconf",
+    "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
     "psycopg[pool]>=3.1.19",
 ]
 
