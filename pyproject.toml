@@ -7,9 +7,7 @@ build-backend = "pdm.backend"
 #build-backend = "pdm.backend"
 
 [project]
-authors = [
-  { name = "fluentqa-team", email = "fluent-qa@fluentqa.com" },
-]
+authors = [{ name = "fluentqa-team", email = "fluent-qa@fluentqa.com" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: MIT License",
@@ -20,10 +18,8 @@ classifiers = [
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
 ]
-description = "A Python boilet template for different types of projects."
-dynamic = [
-  "version",
-]
+description = "A Simple Database Access Object Lib"
+dynamic = ["version"]
 keywords = [
   "copier-template",
   "full-development-lifecycle",
@@ -35,24 +31,23 @@ name = "qpydao"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    #   "pydantic-settings",
-    #   "typer[all]",
-    "dynaconf>=3.2.5",
-    "pydantic>=2.7.4",
-    "alembic>=1.13.1",
-    "sqlalchemy>=2.0.30",
-    "sqlmodel>=0.0.19",
-    "loguru>=0.7.2",
-    "rich>=13.7.1",
-    "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
-    "psycopg[pool]>=3.1.19",
+  #   "pydantic-settings",
+  #   "typer[all]",
+  "dynaconf>=3.2.5",
+  "pydantic>=2.7.4",
+  "alembic>=1.13.1",
+  "sqlalchemy>=2.0.30",
+  "sqlmodel>=0.0.19",
+  "loguru>=0.7.2",
+  "rich>=13.7.1",
+  "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
+  "psycopg[pool]>=3.1.19",
 ]
 
 
-
 [project.urls]
-issue = "https://github.com/fluent-qa/fluentqa-qpydao/issues"
-repository = "https://github.com/fluent-qa/fluentqa-qpydao"
+issue = "https://github.com/fluent-qa/qpydao/issues"
+repository = "https://github.com/fluent-qa/qpydao"
 
 [tool.pytest.ini_options]
 addopts = "-l -s --durations=0"
@@ -69,29 +64,25 @@ cov-report = "html"
 fail_under = 100
 
 [tool.coverage.run]
-source = [
-  "src/qpydao",
-]
+source = ["src/qpydao"]
 
 [tool.ruff]
-extend-exclude = [
-  "template",
-]
+extend-exclude = ["template"]
 fix = true
 src = ["src"]
 
 [tool.ruff.lint]
 select = [
-  "B", # flake8-bugbear
-  "D", # pydocstyle
-  "E", # pycodestyle error
-  "F", # Pyflakes
-  "I", # isort
+  "B",      # flake8-bugbear
+  "D",      # pydocstyle
+  "E",      # pycodestyle error
+  "F",      # Pyflakes
+  "I",      # isort
   "RUF100", # Unused noqa directive
-  "S", # flake8-bandit
-  "SIM", # flake8-simplify
-  "UP", # pyupgrade
-  "W", # pycodestyle warning
+  "S",      # flake8-bandit
+  "SIM",    # flake8-simplify
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warning
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -118,18 +109,9 @@ docs-deploy = "mkdocs gh-deploy --force"
 cleanup = "sh scripts/cleanup.sh"
 
 [tool.pdm.dev-dependencies]
-docs = [
-  "mkdocs-material>=9.5.27",
-  "mkdocs>=1.6.0",
-]
-lint = [
-  "ruff>=0.4.9"
-]
-test = [
-    "pytest-cov>=5.0.0",
-    "pytest>=8.2.2",
-    "pytest-asyncio>=0.23.7",
-]
+docs = ["mkdocs-material>=9.5.27", "mkdocs>=1.6.0"]
+lint = ["ruff>=0.4.9"]
+test = ["pytest-cov>=5.0.0", "pytest>=8.2.2", "pytest-asyncio>=0.23.7"]
 
 
 [[tool.pdm.source]]

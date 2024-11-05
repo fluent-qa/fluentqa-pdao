@@ -27,6 +27,11 @@
 ```shell
 qpydao = { git = "https://github.com/fluent-qa/fluentqa-pdao.git", branch = "main" }
 ```
+or use PDM:
+
+```
+pdm add "git+https://github.com/fluent-qa/qpydao.git@main"
+```
 
 ## 目标
 
