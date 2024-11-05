@@ -100,8 +100,7 @@ test = "pytest "
 docs = "mkdocs serve"
 docs-deploy = "mkdocs gh-deploy --force"
 cleanup = "sh scripts/cleanup.sh"
-purge = "sh scripts/cleanup.sh && rm -rf .venv"
-clean_install = "rm -rf .venv && pdm install"
+purge = "rm -rf .venv && sh scripts/cleanup.sh"
 
 [tool.pdm.dev-dependencies]
 docs = ["mkdocs-material>=9.5.27", "mkdocs>=1.6.0"]
