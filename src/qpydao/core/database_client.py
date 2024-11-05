@@ -245,3 +245,7 @@ class Databases(metaclass=SingletonMeta):
         else:
             return self._databases[db_name]
 
+
+all_dbs = Databases()
+default_dao = all_dbs.get_db("default")
+default_db_conf = database_config(db_name="default")

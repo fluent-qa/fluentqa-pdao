@@ -69,6 +69,10 @@ pg_a_url = "postgresql+psycopg_async://postgres:changeit@127.0.0.1:5432/workspac
 db = databases.get_db("default")
 ```
 
+## How to Init database with tables
+
+
+
 ## How to Use query directly
 
 ```python
