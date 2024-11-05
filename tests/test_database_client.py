@@ -3,7 +3,7 @@ from qpydao import (
     Databases,
     database_config,
     databases,
-    db,
+    db
 )
 
 config = database_config()

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel
 
 from qpydao import databases
-from qpydao.core import sql_utils
+from qpydao import sql_utils
 
 
 def native_sql(

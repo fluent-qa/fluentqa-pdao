@@ -7,8 +7,6 @@ from sqlalchemy import MetaData
 from sqlalchemy.exc import ResourceClosedError
 from sqlmodel import SQLModel, delete, select, text, update
 
-from qpydao import DatabaseClient, db
-
 
 class SqlBuilder:
     @staticmethod
@@ -58,16 +56,3 @@ class SqlResultMapper:
     @staticmethod
     def sqlmodel_query_result_to_model(result) -> list[Any]:
         return [item[0] for item in result]
-
-
-def init_database(database: DatabaseClient = db, schema_name: str = None):
-    """Init postgresql database
-    :param database:
-    :param schema_name:
-    :return:
-    """
-    SQLModel.metadata.create_all(database.engine)
-    metadata = MetaData(
-        schema=schema_name,
-    )
-    metadata.create_all(database.engine)

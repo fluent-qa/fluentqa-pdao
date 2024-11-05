@@ -10,13 +10,13 @@ from sqlalchemy import Row, RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlmodel import Session, SQLModel, select
 
-from qpydao.core.models import (
+from .models import (
     DatabaseConfig,
     SingletonMeta,
     SqlRequestModel,
     database_config,
 )
-from qpydao.core.sql_utils import SqlBuilder
+from .sql_utils import SqlBuilder
 
 from .exceptions import DAOException
 
@@ -241,13 +241,25 @@ class Databases(metaclass=SingletonMeta):
         client = self.register_db(request.db_name, request.config)
         return client.execute(request.sql, **request.parameters)
 
-    def get_db(self, db_name: str = None) -> DatabaseClient:
+    def get_db(self, db_name: str = "default") -> DatabaseClient:
         if db_name is None:
             return self._databases["default"]
         else:
             return self._databases[db_name]
 
 
-all_dbs = Databases()
-default_dao = all_dbs.get_db("default")
-default_db_conf = database_config(db_name="default")
+databases: Databases = Databases()
+db = databases.default_client()
+
+def init_database(database: DatabaseClient, schema_name: str = "")->MetaData:
+    """Init postgresql database
+    :param database:
+    :param schema_name:
+    :return:
+    """
+    SQLModel.metadata.create_all(database.engine)
+    metadata = MetaData(
+        schema=schema_name,
+    )
+    metadata.create_all(database.engine)
+    return metadata
