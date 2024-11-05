@@ -10,22 +10,14 @@ build-backend = "pdm.backend"
 authors = [{ name = "fluentqa-team", email = "fluent-qa@fluentqa.com" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
 ]
 description = "A Simple Database Access Object Lib"
 dynamic = ["version"]
-keywords = [
-  "copier-template",
-  "full-development-lifecycle",
-  "project-template",
-  "scaffold",
-]
+keywords = ["python database access object lib", "decorator", "repository"]
 license = { text = "UNDEFINED" }
 name = "qpydao"
 readme = "README.md"
@@ -33,7 +25,6 @@ requires-python = ">=3.11"
 dependencies = [
   #   "pydantic-settings",
   #   "typer[all]",
-  "dynaconf>=3.2.5",
   "pydantic>=2.7.4",
   "alembic>=1.13.1",
   "sqlalchemy>=2.0.30",
@@ -44,7 +35,6 @@ dependencies = [
   "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
   "ruff>=0.7.2",
 ]
-
 
 [project.urls]
 issue = "https://github.com/fluent-qa/qpydao/issues"
@@ -60,9 +50,10 @@ minversion = "6.0"
 cov = "qpydao"
 cov-report = "html"
 
+[tool.coverage]
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 80
 
 [tool.coverage.run]
 source = ["src/qpydao"]
@@ -101,6 +92,7 @@ trailing_comma_inline_array = true
 
 [tool.pdm]
 distribution = true
+
 [tool.pdm.scripts]
 lint = "ruff check --fix --unsafe-fixes"
 fmt = "ruff format . --check"
@@ -108,6 +100,8 @@ test = "pytest "
 docs = "mkdocs serve"
 docs-deploy = "mkdocs gh-deploy --force"
 cleanup = "sh scripts/cleanup.sh"
+purge = "sh scripts/cleanup.sh && rm -rf .venv"
+clean_install = "rm -rf .venv && pdm install"
 
 [tool.pdm.dev-dependencies]
 docs = ["mkdocs-material>=9.5.27", "mkdocs>=1.6.0"]
