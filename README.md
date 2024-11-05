@@ -54,7 +54,7 @@ pdm add "git+https://github.com/fluent-qa/qpydao.git@main"
 
 ## How to Use database
 
-- setting files:
+- setting files: ```settings.toml``` file
 
 ```sh
 [default]
