@@ -1,20 +1,14 @@
 from __future__ import annotations
 
 from typing import Any
-from typing import Dict
-from typing import List
 
 from pydantic import BaseModel
-from sqlalchemy.exc import ResourceClosedError
-from sqlmodel import SQLModel
-from sqlmodel import delete
-from sqlmodel import select
-from sqlmodel import text
-from sqlmodel import update
-
 from sqlalchemy import MetaData
+from sqlalchemy.exc import ResourceClosedError
+from sqlmodel import SQLModel, delete, select, text, update
 
 from qpydao import DatabaseClient, db
+
 
 class SqlBuilder:
     @staticmethod
@@ -42,7 +36,7 @@ class SqlBuilder:
     def build_update_statement(instance: type[SQLModel], **kwargs):
         return (
             update(type(instance))
-            .filter_by(id=getattr(instance, "id"))
+            .filter_by(id=instance.id)
             .filter_by(**kwargs)
             .values(**instance.model_dump())
         )
@@ -51,7 +45,7 @@ class SqlBuilder:
 class SqlResultMapper:
     @staticmethod
     def sql_result_to_model(
-        result: List[Dict], model_type: type[SQLModel,BaseModel]
+        result: list[dict], model_type: type[SQLModel, BaseModel]
     ) -> list[Any]:
         all_list = []
         try:
@@ -66,10 +60,8 @@ class SqlResultMapper:
         return [item[0] for item in result]
 
 
-
 def init_database(database: DatabaseClient = db, schema_name: str = None):
-    """
-    init postgresql database
+    """Init postgresql database
     :param database:
     :param schema_name:
     :return:

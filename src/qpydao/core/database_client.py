@@ -1,18 +1,24 @@
 from __future__ import annotations
 
 import typing
-from typing import Sequence, Any, Coroutine
+from collections.abc import Coroutine, Sequence
+from typing import Any
 
 import sqlalchemy
-from sqlalchemy import text, RowMapping, Row, Result
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlmodel import SQLModel, Session, select
-
-from qpydao.core.models import DatabaseConfig, database_config, SqlRequestModel, SingletonMeta
 from qpyconf import settings
-from .exceptions import DAOException
+from sqlalchemy import Row, RowMapping, text
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlmodel import Session, SQLModel, select
 
+from qpydao.core.models import (
+    DatabaseConfig,
+    SingletonMeta,
+    SqlRequestModel,
+    database_config,
+)
 from qpydao.core.sql_utils import SqlBuilder
+
+from .exceptions import DAOException
 
 """
 1. database client to do simple database operations
@@ -27,9 +33,7 @@ from qpydao.core.sql_utils import SqlBuilder
 
 
 class DatabaseClient:
-    """
-    Database client, both synchronous and asynchronous.
-    """
+    """Database client, both synchronous and asynchronous."""
 
     def __init__(self, config: DatabaseConfig = None):
         self.config = config
@@ -43,7 +47,7 @@ class DatabaseClient:
                 url=self.config.db_url,
                 pool_pre_ping=True,
                 pool_recycle=self.config.pool_recycle,
-                echo=self.config.echo_queries
+                echo=self.config.echo_queries,
             )
         return self._engine
 
@@ -54,17 +58,16 @@ class DatabaseClient:
                 url=self.config.db_url,
                 pool_pre_ping=True,
                 pool_recycle=self.config.pool_recycle,
-                echo=self.config.echo_queries
+                echo=self.config.echo_queries,
             )
         return self._async_engine
 
     @staticmethod
-    def create(db_name: str) -> "DatabaseClient":
+    def create(db_name: str) -> DatabaseClient:
         return DatabaseClient(database_config(db_name))
 
     def save(self, instance: SQLModel | typing.Any):
-        """
-        save a sql model instance
+        """Save a sql model instance
         :param instance:
         :return:
         """
@@ -75,8 +78,7 @@ class DatabaseClient:
         return instance
 
     def async_save(self, instance: SQLModel | typing.Any):
-        """
-        save a sql model instance
+        """Save a sql model instance
         :param instance:
         :return:
         """
@@ -86,15 +88,14 @@ class DatabaseClient:
             s.refresh(instance)
         return instance
 
-    def batch_save(self, instances: typing.List[SQLModel | typing.Any]):
+    def batch_save(self, instances: list[SQLModel | typing.Any]):
         with Session(self.engine) as s:
             s.bulk_save_objects(instances, return_defaults=True)
             s.commit()
         return instances
 
     def plain_query(self, plain_sql: str, **kwargs) -> Sequence[RowMapping]:
-        """
-        execute sql with binding parameters
+        """Execute sql with binding parameters
         :param plain_sql:
         :param kwargs:
         :return:
@@ -105,8 +106,7 @@ class DatabaseClient:
         return result
 
     async def async_plain_query(self, plain_sql: str, **kwargs) -> Sequence[RowMapping]:
-        """
-        execute sql with binding parameters
+        """Execute sql with binding parameters
         :param plain_sql:
         :param kwargs:
         :return:
@@ -116,19 +116,22 @@ class DatabaseClient:
             result = await conn.execute(s, kwargs)
         return result.mappings().all()
 
-    def query_for_model(self, statement: select) -> Sequence[Row[Any] | RowMapping | Any]:
+    def query_for_model(
+        self, statement: select
+    ) -> Sequence[Row[Any] | RowMapping | Any]:
         with Session(self.engine) as session:
             result = session.exec(statement).fetchall()
         return result
 
-    def async_query_for_model(self, statement: select) -> Sequence[Row[Any] | RowMapping | Any]:
+    def async_query_for_model(
+        self, statement: select
+    ) -> Sequence[Row[Any] | RowMapping | Any]:
         with AsyncSession(self.engine) as session:
             result = session.exec(statement).fetchall()
         return result
 
     def execute(self, plain_sql: str, **kwargs):
-        """
-        execute sql
+        """Execute sql
         :param plain_sql:
         :param kwargs:
         :return:
@@ -138,8 +141,7 @@ class DatabaseClient:
             return conn.execute(s, kwargs)
 
     async def async_execute(self, plain_sql: str, **kwargs):
-        """
-        execute sql
+        """Execute sql
         :param plain_sql:
         :param kwargs:
         :return:
@@ -148,18 +150,24 @@ class DatabaseClient:
         with self.async_engine.connect() as conn:
             return conn.execute(s, kwargs)
 
-    def find_by(self, entity: [SQLModel], **kwargs) -> Sequence[Row[Any] | RowMapping | Any]:
+    def find_by(
+        self, entity: [SQLModel], **kwargs
+    ) -> Sequence[Row[Any] | RowMapping | Any]:
         query = SqlBuilder.build_select_query(entity, **kwargs)
         return self.query_for_model(statement=query)
 
-    async def async_find_by(self, entity: [SQLModel], **kwargs) -> Sequence[Row[Any] | RowMapping | Any]:
+    async def async_find_by(
+        self, entity: [SQLModel], **kwargs
+    ) -> Sequence[Row[Any] | RowMapping | Any]:
         query = SqlBuilder.build_select_query(entity, **kwargs)
         return self.async_query_for_model(statement=query)
 
     def find_one(self, entity: [SQLModel], **kwargs) -> SQLModel | None:
         return self.one_or_none(entity, **kwargs)
 
-    async def async_find_one(self, entity: [SQLModel], **kwargs) -> Coroutine[Any, Any, Any]:
+    async def async_find_one(
+        self, entity: [SQLModel], **kwargs
+    ) -> Coroutine[Any, Any, Any]:
         return self.async_one_or_none(entity, **kwargs)
 
     def one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
@@ -172,9 +180,7 @@ class DatabaseClient:
             return result[0]
 
     async def async_one_or_none(self, entity: type[SQLModel], **kwargs) -> typing.Any:
-        """
-        TODO: Check Out Work or Not
-        """
+        """TODO: Check Out Work or Not."""
         query = SqlBuilder.build_select_query(entity, **kwargs)
         result = self.async_query_for_model(statement=query)
         if len(result) < 1:
@@ -191,7 +197,7 @@ class DatabaseClient:
             session.exec(statement)
             session.commit()
 
-    def update_by_id(self, instance: typing.Union[SQLModel | typing.Any]):
+    def update_by_id(self, instance: SQLModel | typing.Any):
         with Session(self.engine) as session:
             statement = SqlBuilder.build_update_statement(instance)
             session.exec(statement)
@@ -199,7 +205,6 @@ class DatabaseClient:
 
 
 class Databases(metaclass=SingletonMeta):
-
     def __init__(self, conf=settings.DATABASES):
         self._databases = {}
         self._settings = conf
@@ -213,26 +218,23 @@ class Databases(metaclass=SingletonMeta):
         try:
             return self._databases[name]
         except KeyError:
-            raise KeyError(f'Database {name} does not exist')
+            raise KeyError(f"Database {name} does not exist")
 
     def __getattr__(self, name):
         try:
             return self._databases[name]
         except KeyError:
-            raise KeyError(f'Database {name} does not exist')
+            raise KeyError(f"Database {name} does not exist")
 
     def default_client(self):
-
-        return self._databases['default']
+        return self._databases["default"]
 
     def register_db(self, db_name: str, config: DatabaseConfig):
-
         self._databases[db_name] = DatabaseClient(config)
         return self._databases[db_name]
 
     def invoke(self, request: SqlRequestModel):
-        """
-        TODO: SQL Injection Protection
+        """TODO: SQL Injection Protection
         :param request:
         :return:
         """
@@ -241,7 +243,7 @@ class Databases(metaclass=SingletonMeta):
 
     def get_db(self, db_name: str = None) -> DatabaseClient:
         if db_name is None:
-            return self._databases['default']
+            return self._databases["default"]
         else:
             return self._databases[db_name]
 

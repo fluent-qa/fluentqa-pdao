@@ -1,13 +1,13 @@
 from qpydao import databases
 from qpydao.core.decorators import native_sql
 from qpydao.repository import RepositoryMeta
+
 from .fixtures_db import *
 
 init_db_test()
 
 
 class HeroRepo(metaclass=RepositoryMeta, base_type=Hero):
-
     @native_sql("select * from hero")
     def find_hero(self):
         pass
@@ -17,8 +17,7 @@ class HeroRepo(metaclass=RepositoryMeta, base_type=Hero):
         pass
 
     @native_sql("select * from hero where name= :name")
-    def find_hero_by_name(self, name):
-        ...
+    def find_hero_by_name(self, name): ...
 
     @native_sql("update hero set name= :new_name where name= :name", modify=True)
     def update_name(self, name, new_name):

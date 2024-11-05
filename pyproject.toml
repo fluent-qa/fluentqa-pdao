@@ -29,7 +29,7 @@ keywords = [
 license = { text = "UNDEFINED" }
 name = "qpydao"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
   #   "pydantic-settings",
   #   "typer[all]",
@@ -40,8 +40,9 @@ dependencies = [
   "sqlmodel>=0.0.19",
   "loguru>=0.7.2",
   "rich>=13.7.1",
-  "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
   "psycopg[pool]>=3.1.19",
+  "qpyconf @ git+https://github.com/fluent-qa/qpyconf.git@main",
+  "ruff>=0.7.2",
 ]
 
 
@@ -86,7 +87,8 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
+"tests/*" = ["S101", "D103", "D102", "D101"]
+"src/*" = ["D103", "D102", "D101"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -100,8 +102,7 @@ trailing_comma_inline_array = true
 [tool.pdm]
 distribution = true
 [tool.pdm.scripts]
-# ss-python-cli = "ss_python.cli:app"
-lint = "ruff ."
+lint = "ruff check --fix --unsafe-fixes"
 fmt = "ruff format . --check"
 test = "pytest "
 docs = "mkdocs serve"

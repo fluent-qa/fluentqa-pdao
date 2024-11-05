@@ -7,6 +7,4 @@ class DAOException(RuntimeError):
 
 
 class DatabaseClientConfigError(Exception):
-    """
-    Database Configuration is not ready
-    """
+    """Database Configuration is not ready."""

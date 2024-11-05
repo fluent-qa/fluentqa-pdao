@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from abc import ABCMeta
-from typing import Any, Optional
-from typing import Dict
+from typing import Any
 
 from pydantic import BaseModel, model_validator
 from qpyconf import settings
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 from .exceptions import DatabaseClientConfigError
 
@@ -19,20 +18,19 @@ def _validate_param(name: str, value: str) -> None:
 
 
 class DatabaseConfig(BaseModel):
-    """
-    database client configurations
-    """
+    """database client configurations."""
+
     db_url: str | None = None
     host: str = None
     user: str = None
     password: str = None
     database: str = None
-    port: Optional[int] = 5432
-    pool_size: Optional[int] = 10
-    pool_recycle: Optional[int] = 3600
-    echo_queries: Optional[bool] = True
-    charset: Optional[str] = "utf8"
-    options: Dict[str, Any] = None
+    port: int | None = 5432
+    pool_size: int | None = 10
+    pool_recycle: int | None = 3600
+    echo_queries: bool | None = True
+    charset: str | None = "utf8"
+    options: dict[str, Any] = None
 
     @model_validator(mode="after")
     def check_db_url(self):
@@ -45,19 +43,17 @@ class DatabaseConfig(BaseModel):
 
 
 class SqlRequestModel(BaseModel):
-    """
-    SqlRequestModel: Model for SQLRequest
-    """
+    """SqlRequestModel: Model for SQLRequest."""
+
     config: DatabaseConfig
     sql: str
-    parameters: Dict = {}
+    parameters: dict = {}
     db_name: str
 
 
 class FieldMeta(BaseModel):
-    """
-    Field Meta: Model for Field
-    """
+    """Field Meta: Model for Field."""
+
     field_name: str
     field_type: str
     code_type: str = ""
@@ -65,17 +61,15 @@ class FieldMeta(BaseModel):
 
 
 class TableMeta(BaseModel):
-    """
-    TableMeta: Model for Table
-    """
+    """TableMeta: Model for Table."""
+
     table_name: str
     fields: list[FieldMeta]
 
 
 class BaseEntity(SQLModel):
-    """
-    BaseEntity: Model for BaseEntity
-    """
+    """BaseEntity: Model for BaseEntity."""
+
     pass
 
 
@@ -92,5 +86,5 @@ class SingletonMeta(ABCMeta):
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(SingletonMeta, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super().__call__(*args, **kwargs)
         return cls._instances[cls]

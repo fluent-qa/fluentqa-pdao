@@ -6,9 +6,7 @@ import pytest
 from sqlmodel import select
 
 from qpydao.core.sql_utils import SqlResultMapper
-from tests.fixtures_db import Hero
-from tests.fixtures_db import dao
-from tests.fixtures_db import init_db_test
+from tests.fixtures_db import Hero, dao, init_db_test
 
 init_db_test()
 
@@ -39,6 +37,7 @@ def test_batch_save():
     for instance in instances:
         print(instance.json())
 
+
 @pytest.mark.asyncio
 async def test_query_all():
     sql = """
@@ -55,7 +54,7 @@ def test_query_for_model():
 
 
 def test_query_bind_params():
-    sql = f'select * from hero where name=:name'
+    sql = "select * from hero where name=:name"
     raw_result = dao.plain_query(sql, name="test6")
     result = SqlResultMapper.sql_result_to_model(raw_result, Hero)
     print(result)

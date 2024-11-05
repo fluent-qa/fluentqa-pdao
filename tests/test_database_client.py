@@ -1,4 +1,10 @@
-from qpydao import DatabaseClient, DatabaseConfig, database_config, db, Databases, databases
+from qpydao import (
+    DatabaseClient,
+    Databases,
+    database_config,
+    databases,
+    db,
+)
 
 config = database_config()
 client = DatabaseClient(config=config)
