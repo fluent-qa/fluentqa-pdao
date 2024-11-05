@@ -3,8 +3,10 @@ from qpydao import (
     Databases,
     database_config,
     databases,
-    db
+    db,
+    init_database
 )
+from qpydao.database_client import init_database
 
 config = database_config()
 client = DatabaseClient(config=config)
@@ -29,3 +31,6 @@ def test_default_client():
 def test_database_singleton():
     db = Databases()
     assert databases == db
+
+def test_init_database():
+    init_database(client)

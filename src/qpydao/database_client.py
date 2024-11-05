@@ -6,7 +6,7 @@ from typing import Any
 
 import sqlalchemy
 from qpyconf import settings
-from sqlalchemy import Row, RowMapping, text
+from sqlalchemy import Row, RowMapping, text,MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlmodel import Session, SQLModel, select
 
@@ -251,7 +251,7 @@ class Databases(metaclass=SingletonMeta):
 databases: Databases = Databases()
 db = databases.default_client()
 
-def init_database(database: DatabaseClient, schema_name: str = "")->MetaData:
+def init_database(database: DatabaseClient, schema_name: str = ""):
     """Init postgresql database
     :param database:
     :param schema_name:
